@@ -5,10 +5,12 @@
 require_relative "piece"
 require "colorize"
 class Board
-    attr_accessor :pieces_arr
+    attr_accessor :pieces_arr, :bg_color_1, :bg_color_2
     def initialize
+        @bg_color_1 = "light_blue"
+        @bg_color_2 = "light_white"
         @pieces_arr = []
-        set_up_pawns
+        #set_up_pawns
         set_up_other_pieces
     end
 
@@ -42,19 +44,57 @@ class Board
     end
 
     def find_piece(x,y)
+        
         arr = [x,y]
         @pieces_arr.each do |piece|
-            puts "DEGUG, FOUND IT #{piece.position} #{piece.symbol}" if piece.position == arr
-            return piece if piece.position == arr
             
+            return piece if piece.position == arr   
         end
+        return nil
+    end
+
+    def display
+        x = 0
+        y = 7
+        color = @bg_color_2
+        helper_arr = ["n1","n2","n3","n4","n5","n6","n7","n8"]
+        helper_arr_index = [" 0"," 1"," 2"," 3"," 4"," 5"," 6"," 7"]
+        8.times do
+            color = alternate_board_color(color)
+            
+            
+            print helper_arr[y]
+            print helper_arr_index[y].green
+            
+            
+            8.times do
+                color = alternate_board_color(color)
+                piece = find_piece(x,y)
+                
+                print "  #{piece.symbol}  ".colorize(:color => :black, :background => :"#{color}") unless piece.nil?
+                print "     ".colorize(:color => :black, :background => :"#{color}") if piece.nil?
+                
+                x +=1
+            end 
+            puts ""
+            x = 0
+            y -= 1  
+        end
+        puts '      0    1    2    3    4    5    6    7'.green
+        puts '      A    B    C    D    E    F    G    H'
+         
+    end
+
+    def alternate_board_color(color)
+        return @bg_color_1 if color == @bg_color_2
+        return @bg_color_2 if color == @bg_color_1
     end
 
     
 end
 
-b = Board.new
-a_piece = b.find_piece(0,7)
+
+
 
 
 
